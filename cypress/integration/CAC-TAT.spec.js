@@ -21,7 +21,8 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.title().should('eq', 'Central de Atendimento ao Cliente TAT');
 
     })
-    it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida',function(){
+    it.only('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida',function(){
+      cy.clock();
       cy.get('#firstName').type('eduardo');
       cy.get('#lastName').type('tampelini');
       cy.get('#email').type('ezafalon2gamil.com');
@@ -29,6 +30,8 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.get('#open-text-area').type('apenas para teste', {delay: 0});
       cy.contains('button','Enviar').click();
       cy.get('.error').should('be.visible')
+      cy.tick(3000);
+      cy.get('.error').should('not.be.visible')
   })
   it('numero de telefone invalido',function(){
     cy.get('#firstName').type('eduardo');
