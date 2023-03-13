@@ -21,7 +21,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.title().should('eq', 'Central de Atendimento ao Cliente TAT');
 
     })
-    it.only('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida',function(){
+    it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida',function(){
       cy.clock();
       cy.get('#firstName').type('eduardo');
       cy.get('#lastName').type('tampelini');
@@ -43,6 +43,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     
 })
   it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
+    cy.clock();
     cy.get('#firstName').type('eduardo');
     cy.get('#lastName').type('tampelini');
     cy.get('#email').type('ezafalon@gamil.com');
@@ -50,6 +51,8 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     cy.get('#phone-checkbox').check();
     cy.contains('button','Enviar').click();
     cy.get('.error').should('be.visible')
+    cy.tick(3000);
+    cy.get('.error').should('not.be.visible')
   })
   it('preenche e limpa os campos nome, sobrenome, email e telefone', function(){
     cy.get('#firstName').type('eduardo').should('have.value', 'eduardo').clear().should('be.empty');
@@ -59,8 +62,11 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
   })
   it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios',()=>{
+    cy.clock();
     cy.get('.button').click();
     cy.get('.error').should('be.visible');
+    cy.tick(3000);
+    cy.get('.error').should('not.be.visible')
   })
   it('envia o formuário com sucesso usando um comando customizado', ()=>{
     cy.fillMandatoryFieldsAndSubmit();
@@ -113,5 +119,21 @@ describe('Central de Atendimento ao Cliente TAT', function() {
   cy.get('.privacy').should('be.visible');
   
  })
+
+ it('esconde e exibe as mensagens de sucesso e erro com .invoke',()=>{
+    cy.get('.success').should('not.be.visible').invoke('show').should('be.visible').and('contain','Mensagem enviada com sucesso.').invoke('hide').should('not.be.visible');
+    cy.get('.error').should('not.be.visible').invoke('show').should('be.visible').and('contain','Valide os campos obrigatórios!').invoke('hide').should('not.be.visible');
+  })
+
+  it('achei o gato',()=>{
+    cy.get('#cat').should('not.be.visible').invoke('show').should('be.visible');
+  })
+
+  it.only('preenche a area de texto usando o comando invoke',()=>{
+    const longtext = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+    cy.get('#open-text-area').invoke('val', longtext).should('have.value',longtext)
+  })
  
   })
+
+ 
